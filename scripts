@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Update packages
+apt update -y
+
+# Install Apache
+apt install apache2 -y
+
+# Enable and start Apache
+systemctl enable apache2
+systemctl start apache2
+
+# Remove default page
+rm -f /var/www/html/index.html
+
+# Get private IP
+PRIVATE_IP=$(hostname -I | awk '{print $1}')
+
+# Create application page
+cat <<EOF > /var/www/html/index.html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AWS Multi-AZ Application</title>
+</head>
+<body>
+    <h1>AWS Multi-AZ High Availability Demo</h1>
+    <p>Server Private IP: $PRIVATE_IP</p>
+</body>
+</html>
+EOF
+
+systemctl restart apache2
